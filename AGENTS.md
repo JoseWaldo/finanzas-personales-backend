@@ -81,6 +81,16 @@ import { PrismaClient } from "@/prisma";
 import { prisma } from "@/db";
 ```
 
+### Prisma 7 Configuration
+
+The project uses Prisma 7 with `prisma.config.ts` for datasource URL (not in the schema file). The `PrismaClient` constructor uses the `@prisma/adapter-pg` adapter. `dotenv` loads `.env` variables before the config is evaluated.
+
+```
+prisma.config.ts   # Datasource URL + migrations config
+src/db/index.ts    # PrismaClient singleton with PrismaPg adapter
+src/prisma.ts      # Re-export barrel from generated client
+```
+
 ---
 
 ## Architecture
