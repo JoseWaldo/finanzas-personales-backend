@@ -1,8 +1,8 @@
-import { resendEmailService } from "./resend.service";
+import { smtpEmailService } from "./smtp.service";
 import type { EmailService } from "./email.service";
 
 export function createEmailService(): EmailService {
-  return resendEmailService;
+  return smtpEmailService;
 }
 
 export type { EmailService };
