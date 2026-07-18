@@ -18,6 +18,8 @@ model User {
 
   sessions Session[]
   accounts Account[]
+
+  @@map("tbl_user")
 }
 
 model Session {
@@ -30,6 +32,8 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("tbl_session")
 }
 
 model Account {
@@ -49,6 +53,7 @@ model Account {
   updatedAt             DateTime  @updatedAt @map("updated_at")
 
   @@unique([providerId, accountId])
+  @@map("tbl_account")
 }
 
 model Verification {
@@ -58,4 +63,6 @@ model Verification {
   expiresAt  DateTime @map("expires_at")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("tbl_verification")
 }

@@ -56,7 +56,7 @@ prisma/
 | Business model (schema) | PascalCase, singular | `Cliente`, `Contrato` |
 | Business table (physical) | `tbl_` prefix + snake_case via `@@map` | `@@map("tbl_cliente")` |
 | Fields (compound) | camelCase in schema, `@map` to snake_case | `userId @map("user_id")` |
-| Auth models (Better Auth) | English, no `tbl_` prefix (historical exception) | `User`, `Session`, `Account` |
+| Auth models (Better Auth) | English, `tbl_` prefix via `@@map` | `User`, `Session`, `Account`, `Verification` |
 
 ### Mandatory fields in every model
 

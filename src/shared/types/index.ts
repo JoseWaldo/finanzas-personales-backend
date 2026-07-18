@@ -14,3 +14,31 @@ export type PaginatedResult<T> = {
   limit: number;
   totalPages: number;
 };
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  emailVerified: boolean;
+  image?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AuthSession {
+  id: string;
+  token: string;
+  expiresAt: Date;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+declare module "hono" {
+  interface ContextVariableMap {
+    user: AuthUser;
+    session: AuthSession;
+  }
+}
