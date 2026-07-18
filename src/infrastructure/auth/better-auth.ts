@@ -5,6 +5,7 @@ import { prisma } from "@/db";
 import { sendWelcomeEmail } from "@/infrastructure/email/send-welcome-email";
 
 export const auth = betterAuth({
+  basePath: "/api/v1/auth",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
