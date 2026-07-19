@@ -37,7 +37,7 @@ bun run db:format        # Format schema
 
 ## Prisma Schema Conventions
 
-See `skills/prisma-base-datos.md` for the full standard. Key rules:
+La guía completa de Prisma vive en `.opencode/prisma-base-datos/SKILL.md`. Aquí quedan solo las reglas que este agente debe aplicar siempre:
 
 ### Schema location
 ```
@@ -159,7 +159,7 @@ index.ts                    # Entry point
 |---|---|
 | Runtime | Bun |
 | HTTP Framework | Hono v4 |
-| ORM | Prisma v6 |
+| ORM | Prisma v7 |
 | Auth | Better Auth v1 |
 | Validation | Zod v3 |
 | Database | PostgreSQL |
