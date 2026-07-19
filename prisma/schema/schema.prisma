@@ -16,10 +16,30 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  sessions Session[]
-  accounts Account[]
+  sessions   Session[]
+  accounts   Account[]
+  categories Category[]
 
   @@map("tbl_user")
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+model Category {
+  id        String       @id @default(cuid())
+  name      String
+  type      CategoryType
+  icon      String       @default("Tag")
+  userId    String?      @map("user_id")
+  user      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  @@unique([name, userId])
+  @@map("tbl_category")
 }
 
 model Session {
