@@ -16,9 +16,12 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  sessions   Session[]
-  accounts   Account[]
-  categories Category[]
+  sessions          Session[]
+  accounts          Account[]
+  categories        Category[]
+  transactions      Transaction[]
+  subscriptions     Subscription[]
+  subscriptionTags  SubscriptionTag[]
 
   @@map("tbl_user")
 }
@@ -35,11 +38,28 @@ model Category {
   icon      String       @default("Tag")
   userId    String?      @map("user_id")
   user      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  transactions Transaction[]
 
   @@unique([name, userId])
   @@map("tbl_category")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  amount      Decimal  @db.Decimal(10, 2)
+  date        DateTime @db.Date
+  description String?  @db.VarChar(255)
+  categoryId  String   @map("category_id")
+  category    Category @relation(fields: [categoryId], references: [id])
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("tbl_transaction")
 }
 
 model Session {
@@ -85,4 +105,48 @@ model Verification {
   updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("tbl_verification")
+}
+
+enum SubscriptionFrequency {
+  MONTHLY
+  YEARLY
+  QUARTERLY
+  BIWEEKLY
+  WEEKLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+model SubscriptionTag {
+  id            String         @id @default(cuid())
+  name          String
+  color         String         @default("#6b7280")
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  @@unique([name, userId])
+  @@map("tbl_subscription_tag")
+}
+
+model Subscription {
+  id              String               @id @default(cuid())
+  name            String
+  amount          Decimal              @db.Decimal(10, 2)
+  nextPaymentDate DateTime             @map("next_payment_date") @db.Date
+  frequency       SubscriptionFrequency @default(MONTHLY)
+  status          SubscriptionStatus    @default(ACTIVE)
+  userId          String               @map("user_id")
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags            SubscriptionTag[]
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+
+  @@map("tbl_subscription")
 }
