@@ -8,7 +8,17 @@ import { errorMiddleware } from "@/presentation/v1/middlewares/error.middleware"
 
 const app = new Hono();
 
-app.use("*", cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  "*",
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:8080",
+      "https://balanz.nytrolabs.net",
+    ],
+    credentials: true,
+  }),
+);
 app.use("*", logger());
 
 app.onError(errorMiddleware);
