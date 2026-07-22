@@ -22,4 +22,9 @@ export const auth = betterAuth({
       },
     },
   },
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for"],
+    },
+  },
 });
