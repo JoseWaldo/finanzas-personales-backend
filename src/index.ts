@@ -14,7 +14,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:8080",
-      "https://balanz.nytrolabs.net",
+      "https://app.balanz.nytrolabs.net",
+      "https://app.dev.balanz.nytrolabs.net",
     ],
     credentials: true,
   }),
