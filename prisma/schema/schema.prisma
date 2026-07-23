@@ -16,12 +16,14 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  sessions          Session[]
-  accounts          Account[]
-  categories        Category[]
-  transactions      Transaction[]
-  subscriptions     Subscription[]
-  subscriptionTags  SubscriptionTag[]
+  sessions            Session[]
+  accounts            Account[]
+  categories          Category[]
+  transactions        Transaction[]
+  subscriptions       Subscription[]
+  subscriptionTags    SubscriptionTag[]
+  entidadesFinancieras EntidadFinanciera[]
+  formasPago          FormaPago[]
 
   @@map("tbl_user")
 }
@@ -144,9 +146,54 @@ model Subscription {
   status          SubscriptionStatus    @default(ACTIVE)
   userId          String               @map("user_id")
   user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  formaPagoId     String               @map("forma_pago_id")
+  formaPago       FormaPago            @relation(fields: [formaPagoId], references: [id], onDelete: Restrict)
   tags            SubscriptionTag[]
   createdAt       DateTime             @default(now()) @map("created_at")
   updatedAt       DateTime             @updatedAt @map("updated_at")
 
   @@map("tbl_subscription")
+}
+
+enum FormaPagoTipo {
+  CREDIT
+  DEBIT
+  CASH
+}
+
+model EntidadFinanciera {
+  id              String       @id @default(cuid())
+  nombre          String
+  gradienteInicio String       @map("gradiente_inicio")
+  gradienteFin    String       @map("gradiente_fin")
+  formatoNumero   String?      @map("formato_numero")
+  esSistema       Boolean      @default(false) @map("es_sistema")
+  userId          String?      @map("user_id")
+  user            User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  formasPago      FormaPago[]
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  @@unique([nombre, userId])
+  @@map("tbl_entidad_financiera")
+}
+
+model FormaPago {
+  id                  String              @id @default(cuid())
+  nombre              String
+  tipo                FormaPagoTipo
+  numeroEncriptado    String?             @map("numero_encriptado")
+  ultimosCuatro       String?             @db.VarChar(4) @map("ultimos_cuatro")
+  publico             Boolean             @default(false)
+  gradienteInicio     String              @map("gradiente_inicio")
+  gradienteFin        String              @map("gradiente_fin")
+  entidadFinancieraId String?             @map("entidad_financiera_id")
+  entidadFinanciera   EntidadFinanciera?  @relation(fields: [entidadFinancieraId], references: [id], onDelete: Restrict)
+  userId              String              @map("user_id")
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions       Subscription[]
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+
+  @@map("tbl_forma_pago")
 }

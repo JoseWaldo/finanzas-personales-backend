@@ -12,6 +12,7 @@ export class CreateSubscriptionUseCase {
       nextPaymentDate: new Date(data.nextPaymentDate),
       frequency: data.frequency,
       status: data.status ?? "ACTIVE",
+      formaPagoId: data.formaPagoId,
       tagIds: data.tagIds ?? [],
       userId,
     });

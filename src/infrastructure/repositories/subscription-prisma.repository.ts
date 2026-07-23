@@ -51,9 +51,9 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
     const [subscriptions, total] = await Promise.all([
       this.db.subscription.findMany({
         where,
-        include: { tags: true },
-        orderBy: { nextPaymentDate: "asc" },
-        skip: (filters.page - 1) * filters.limit,
+      include: { tags: true, formaPago: { include: { entidadFinanciera: true } } },
+      orderBy: { nextPaymentDate: "asc" },
+      skip: (filters.page - 1) * filters.limit,
         take: filters.limit,
       }),
       this.db.subscription.count({ where }),
@@ -71,7 +71,7 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
   async findById(id: string): Promise<SubscriptionEntity | null> {
     const subscription = await this.db.subscription.findUnique({
       where: { id },
-      include: { tags: true },
+      include: { tags: true, formaPago: { include: { entidadFinanciera: true } } },
     });
 
     return subscription ? this.toEntity(subscription) : null;
@@ -85,6 +85,7 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
         nextPaymentDate: data.nextPaymentDate,
         frequency: data.frequency as Prisma.EnumSubscriptionFrequencyFilter["equals"],
         status: data.status as Prisma.EnumSubscriptionStatusFilter["equals"],
+        formaPagoId: data.formaPagoId,
         userId: data.userId,
       },
       include: { tags: true },
@@ -108,11 +109,12 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
     if (data.nextPaymentDate !== undefined) updateData.nextPaymentDate = data.nextPaymentDate;
     if (data.frequency !== undefined) updateData.frequency = data.frequency as Prisma.EnumSubscriptionFrequencyFilter["equals"];
     if (data.status !== undefined) updateData.status = data.status as Prisma.EnumSubscriptionStatusFilter["equals"];
+    if (data.formaPagoId !== undefined) updateData.formaPago = { connect: { id: data.formaPagoId } };
 
     const subscription = await this.db.subscription.update({
       where: { id },
       data: updateData,
-      include: { tags: true },
+      include: { tags: true, formaPago: { include: { entidadFinanciera: true } } },
     });
 
     if (data.tagIds !== undefined) {
@@ -140,7 +142,7 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
   async getDashboardSummary(userId: string): Promise<SubscriptionDashboardSummary> {
     const subscriptions = await this.db.subscription.findMany({
       where: { userId, status: "ACTIVE" },
-      include: { tags: true },
+      include: { tags: true, formaPago: { include: { entidadFinanciera: true } } },
       orderBy: { nextPaymentDate: "asc" },
     });
 
@@ -234,6 +236,22 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
     userId: string;
     createdAt: Date;
     updatedAt: Date;
+    formaPago?: {
+      id: string;
+      nombre: string;
+      tipo: string;
+      numeroEncriptado: string | null;
+      ultimosCuatro: string | null;
+      publico: boolean;
+      gradienteInicio: string;
+      gradienteFin: string;
+      entidadFinancieraId: string | null;
+      entidadFinanciera?: {
+        id: string;
+        nombre: string;
+        formatoNumero: string | null;
+      } | null;
+    } | null;
     tags: {
       id: string;
       name: string;
@@ -251,6 +269,29 @@ export class SubscriptionPrismaRepository implements ISubscriptionRepository {
       frequency: row.frequency as SubscriptionEntity["frequency"],
       status: row.status as SubscriptionEntity["status"],
       userId: row.userId,
+      formaPago: row.formaPago
+        ? {
+            id: row.formaPago.id,
+            nombre: row.formaPago.nombre,
+            tipo: row.formaPago.tipo as SubscriptionEntity["formaPago"]["tipo"],
+            ultimosCuatro: row.formaPago.ultimosCuatro,
+            gradienteInicio: row.formaPago.gradienteInicio,
+            gradienteFin: row.formaPago.gradienteFin,
+            formatoNumero: row.formaPago.entidadFinanciera?.formatoNumero ?? null,
+            entidadFinancieraId: row.formaPago.entidadFinancieraId,
+            entidadFinancieraNombre: row.formaPago.entidadFinanciera?.nombre ?? null,
+          }
+        : {
+            id: "",
+            nombre: "",
+            tipo: "CASH" as const,
+            ultimosCuatro: null,
+            gradienteInicio: "#000000",
+            gradienteFin: "#000000",
+            formatoNumero: null,
+            entidadFinancieraId: null,
+            entidadFinancieraNombre: null,
+          },
       tags: row.tags.map((t) => ({
         id: t.id,
         name: t.name,

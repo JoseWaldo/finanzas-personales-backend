@@ -16,6 +16,7 @@ export interface CreateSubscriptionInput {
   nextPaymentDate: Date;
   frequency: string;
   status: string;
+  formaPagoId: string;
   tagIds: string[];
   userId: string;
 }
@@ -26,6 +27,7 @@ export interface UpdateSubscriptionInput {
   nextPaymentDate?: Date;
   frequency?: string;
   status?: string;
+  formaPagoId?: string;
   tagIds?: string[];
 }
 

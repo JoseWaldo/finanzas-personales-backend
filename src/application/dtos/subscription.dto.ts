@@ -10,6 +10,7 @@ export const createSubscriptionSchema = z.object({
     required_error: "La frecuencia es requerida",
   }),
   status: z.enum(["ACTIVE", "PAUSED", "CANCELLED"]).optional().default("ACTIVE"),
+  formaPagoId: z.string().min(1, "La forma de pago es requerida"),
   tagIds: z.array(z.string()).optional().default([]),
 });
 
@@ -22,6 +23,7 @@ export const updateSubscriptionSchema = z.object({
     .optional(),
   frequency: z.enum(["MONTHLY", "YEARLY", "QUARTERLY", "BIWEEKLY", "WEEKLY"]).optional(),
   status: z.enum(["ACTIVE", "PAUSED", "CANCELLED"]).optional(),
+  formaPagoId: z.string().min(1).optional(),
   tagIds: z.array(z.string()).optional(),
 });
 

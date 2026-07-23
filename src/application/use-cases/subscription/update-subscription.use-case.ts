@@ -22,6 +22,7 @@ export class UpdateSubscriptionUseCase {
       ...(data.nextPaymentDate !== undefined && { nextPaymentDate: new Date(data.nextPaymentDate) }),
       ...(data.frequency !== undefined && { frequency: data.frequency }),
       ...(data.status !== undefined && { status: data.status }),
+      ...(data.formaPagoId !== undefined && { formaPagoId: data.formaPagoId }),
       ...(data.tagIds !== undefined && { tagIds: data.tagIds }),
     });
   }
