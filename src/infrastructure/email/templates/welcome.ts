@@ -2,7 +2,7 @@ export function welcomeEmailTemplate(userName: string): string {
   return `
     <div style="max-width:480px;margin:0 auto;font-family:'Hanken Grotesk',Arial,sans-serif;">
       <div style="background:#1354BE;padding:32px 24px;text-align:center;">
-        <h1 style="color:#FFFFFF;margin:0;font-size:22px;font-weight:700;">Bienvenido a Balanz</h1>
+        <h1 style="color:#FFFFFF;margin:0;font-size:22px;font-weight:700;">Bienvenido a Sumly</h1>
       </div>
       <div style="padding:32px 24px;background:#F2F7FF;">
         <p style="font-size:16px;color:#002A6E;line-height:1.6;">

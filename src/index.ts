@@ -14,8 +14,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:8080",
-      "https://app.balanz.nytrolabs.net",
-      "https://app.dev.balanz.nytrolabs.net",
+      "https://app.sumly.nytrolabs.net",
+      "https://app.dev.sumly.nytrolabs.net",
     ],
     credentials: true,
   }),
